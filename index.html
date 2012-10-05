@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Responsivator</title>
+    <link rel="stylesheet" href="_/css/normalize.css">
+    <link rel="stylesheet" href="_/css/style.css">
+
+    <!-- Facebook sharing. http://developers.facebook.com/docs/opengraph/ -->
+    <meta property="og:site_name" content="Responsivator" />
+    <meta property="og:title" content="Responsivator" />
+    <meta property="og:description" content="See and share how web pages look at different screen sizes" />
+    <meta property="og:image" content="" /> <!-- Thumbnail for sharing. Use absolute URL. Minimum 50x50 -->
+    <meta property="og:type" content="" /><!-- http://developers.facebook.com/docs/opengraph/#types -->
+    
+    <link rel="shortcut icon" href="_/ico/favicon.ico">
+    <link rel="apple-touch-icon" href="_/ico/apple-touch-icon.png">
+</head>
+<body>
+
+    <header>
+        <h1>Responsivator</h1>
+        <h2>View &amp; share how sites look at different screen sizes</h2>
+        <span class="author"><small>an <a href="#" target="_blank">open source project</a> by <a href="http://twitter.com/johnpolacek" target="_blank">@johnpolacek</a> of the <a href="http://dfcb.github.com" target="_blank">dev group</a> at draftfcb chicago</small></span>
+    </header>
+
+    <div class="controls">
+        <fieldset>
+            <label>Enter a website url:</label>
+            <input type="text" id="input-site">
+            <a href="#" id="view-btn" class="btn">Responsivate!</a>
+            <small>or</small>
+            <a href="#" id="view-random-btn" class="btn">view&nbsp;random</a>
+        </fieldset>
+        
+        <fieldset class="share-field">
+            <label>Share link:</label>
+            <input type="text" id="share-field-input" value="" readonly="readonly">
+            <label><input type="checkbox" id="hide-header"> hide header in share link</label>
+            <a href="#" class="social-btn" id="facebook-btn" target="_blank"><img src="_/img/facebook.png" /></a>
+            <a href="#" class="social-btn" id="twitter-btn" target="_blank"><img src="_/img/twitter.png" /></a>
+        </fieldset>
+    </div>
+    
+    <!-- wrapper (iFrames) -->
+    <label id="curr-site"></label>
+    <div id="frames-wrapper">
+        
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="_/js/lib/jquery-1.7.2.min.js"><\/script>')</script>
+    <script src="_/js/jquery.framer.js">></script>
+    <script src="_/js/jquery.configurator.js">></script>
+    <script>
+        $(function() {
+
+            // default random sites to show if no user selection
+            var sitesArray = [
+                'http://mountaindew.com',
+                'http://www.anderssonwise.com',
+                'http://www.bostonglobe.com',
+                'http://us.illyissimo.com',
+                'http://www.starbucks.com',
+                'http://mediaqueri.es',
+                'http://www.alistapart.com/d/responsive-web-design/ex/ex-site-FINAL.html',
+                'http://corporate.target.com',
+                'http://clearairchallenge.com',
+                'http://foodsense.is',
+                'http://sweethatclub.org',
+                'http://morehazards.com',
+                'http://www.microsoft.com',
+                'http://css-tricks.com'
+            ];
+
+            // url of responsivator web page for share outs
+            var responsivatorURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+            // responsivate site to show from url parameters or do random
+            var site =  $.Configurator().getConfig().site || getRandomSite();
+            responsivate(site);
+
+            // hide the header if that is option is set in the url
+            if ($.Configurator().getConfig().header == 'hide') {
+                $('header, .controls, #curr-site').css('display','none');
+            }
+
+            // button event to responsivate! a random responsive page
+            $('#view-random-btn').on('click',function(e) {
+                e.preventDefault();
+                $.Framer({ url:getRandomSite(), target:'#frames-wrapper' });
+            });
+
+            // button event to responsivate! the url in the input site field
+            $('#view-btn').on('click',function(e) {
+                e.preventDefault();
+                responsivate($('#input-site').val());
+            });
+
+            // when you click the share field, auto-select it so it can be copied
+            $('#share-field-input').on('click',function() {$(this).select();});
+            
+            // update share link when hide header option is checked
+            $('#hide-header').on('change',function() {
+                if ($(this).is(':checked')) {
+                    $('#share-field-input').val(responsivatorURL+'?site='+site+'&header=hide');
+                } else {
+                    $('#share-field-input').val(responsivatorURL+'?site='+site);
+                }
+            });
+            
+            // responsivate! on enter keypress
+            $('#input-site').keypress(function(e) {
+                if (e.keyCode == 13) {
+                    responsivate($('#input-site').val());
+                }
+            });
+
+            function getRandomSite() {
+                return sitesArray[Math.floor(Math.random()*sitesArray.length)];
+            }
+
+            function responsivate(url) {
+                // add http:// if it is missing
+                if (url.indexOf('http://')===-1) { url = 'http://'+url; }
+
+                // create share url (and check if header hide option is checked)
+                var shareURL = responsivatorURL+'?site='+url;
+                if ($('#hide-header').is(':checked')) {
+                    shareURL += '&header=hide';
+                }
+                $('#share-field-input').val(shareURL);
+                
+                // update frames
+                $.Framer({ url:url, target:'#frames-wrapper' });
+                
+                // update current site label
+                $('#curr-site').html('website: <a href="'+url+'" target="_blank">'+url.replace('http://','')+'</a>');
+                
+                // update facebook link
+                $('#facebook-btn').attr('href','http://www.facebook.com/sharer.php?u=http://dfcb.github.com/responsivator?site='+url);
+                
+                // update twitter link
+                $('#twitter-btn').attr('href','https://twitter.com/share?url=http%3A%2F%2Fdfcb.github.com%2Fresponsivator?site='+encodeURIComponent(site)+'&text=See%20how%20websites%20look%20at%20different%20screensizes%20with%20Responsivator&hashtags=responsivewebdesign');
+                
+                // update site var
+                site = url;
+            }
+
+        });
+    </script>
+</body>
+</html>
