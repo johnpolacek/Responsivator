@@ -64,7 +64,7 @@ label { font-size: 14px; }
 a, a:visited, a:active { color: #999;}
 a:hover { color: #666;}
 
-.controls { margin: 0 0 20px; padding: 0 0 5px 18px; background: #eee; }
+.controls { margin: 0 0 20px; padding: 8px 0 5px 18px; background: #eee; }
 fieldset { margin-top: -8px; border: none; padding: 0; display: inline; line-height: 2.4; }
 .share-field { font-size: .8em; }
 #share-field-input { width: 200px; cursor: pointer;}
@@ -72,7 +72,7 @@ fieldset { margin-top: -8px; border: none; padding: 0; display: inline; line-hei
 #view-random-btn {  margin: 0 5px; }
 #curr-site { margin: 20px; font-style: italic; }
 #frames-wrapper { margin-top: 10px; }
-.social-btn { padding-left: 12px; position: relative; top: 12px; }
+.social-btn { padding-left: 12px; position: relative; top: 9px; }
 
 .btn {
     background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #efefef), color-stop(1, #dfdfdf) );
