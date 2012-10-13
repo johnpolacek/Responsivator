@@ -89,8 +89,10 @@
 
             // get sizes from url params or use default
             var frames = [];
+            var isCustomSizes = false;
             var sizes = $.Configurator().getConfig().sizes;
             if (sizes) {
+                isCustomSizes = true;
                 $.each(sizes, function(i,val) {
                     frame = val.split(':');
                     size = frame[0].toLowerCase().split('x');
@@ -140,10 +142,11 @@
             
             // update share link when hide header option is checked
             $('#hide-header').on('change',function() {
+                
                 if ($(this).is(':checked')) {
-                    $('#share-field-input').val(responsivatorURL+'?site='+site+'&header=hide');
+                    $('#share-field-input').val(responsivatorURL+'?site='+site+'&header=hide'+getSizeParams());
                 } else {
-                    $('#share-field-input').val(responsivatorURL+'?site='+site);
+                    $('#share-field-input').val(responsivatorURL+'?site='+site+getSizeParams());
                 }
             });
             
@@ -158,6 +161,7 @@
             $()
             $('#btn-customize').on('click', function (e) {
                 e.preventDefault();
+                isCustomSizes = true;
                 $('#form-customize').removeClass('collapsed');
             });
             $('#customize-btn-finish').on('click', function(e) {
@@ -185,7 +189,7 @@
                 });
                 if (valid) {
                     $('#form-customize').addClass('collapsed');
-                    window.location = './?sizes='+sizeConfig;
+                    window.location = './?site='+site+'&sizes='+sizeConfig;
                 }
             })
             $('#form-customize').on('click','.btn-delete', function(e) {
@@ -197,15 +201,31 @@
                 return sitesArray[Math.floor(Math.random()*sitesArray.length)];
             }
 
+            function getSizeParams() {
+                var sizeParams = '';
+                if (isCustomSizes) {
+                    sizeParams += '&sizes='
+                    $.each(frames, function(i,val){
+                        sizeParams += frames[i].width+'x'+frames[i].height+':'+frames[i].label;
+                        if (i !== frames.length-1) {
+                            sizeParams += ',';
+                        }
+                    });
+                }
+                return sizeParams;
+            }
+
             function responsivate(url) {
                 // add http:// if it is missing
                 if (url.indexOf('http://')===-1) { url = 'http://'+url; }
 
                 // create share url (and check if header hide option is checked)
                 var shareURL = responsivatorURL+'?site='+url;
+
                 if ($('#hide-header').is(':checked')) {
                     shareURL += '&header=hide';
                 }
+                shareURL += getSizeParams();
                 $('#share-field-input').val(shareURL);
                 
                 // update frames
