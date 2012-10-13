@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Responsivator</title>
-    <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
 
     <!-- Facebook sharing. http://developers.facebook.com/docs/opengraph/ -->
     <meta property="og:site_name" content="Responsivator" />
     <meta property="og:title" content="Responsivator" />
     <meta property="og:description" content="See and share how web pages look at different screen sizes" />
-    <meta property="og:image" content="http://dfcb.github.com/Responsivator/img/responsivator-icon.png" /> <!-- Thumbnail for sharing. Use absolute URL. Minimum 50x50 -->
+    <meta property="og:image" content="http://dfcb.github.com/Responsivator/img/responsivator-icon.png" /> 
+    <!-- Thumbnail for sharing. Use absolute URL. Minimum 50x50 -->
     
     <link rel="shortcut icon" href="img/favicon.ico">
     <link rel="apple-touch-icon" href="img/responsivator-icon.png">
@@ -29,8 +29,8 @@
             <label>Enter website url:</label>
             <input type="text" id="input-site">
             <a href="#" id="view-btn" class="btn">Responsivate!</a>
-            <small>or</small>
             <a href="#" id="view-random-btn" class="btn">view&nbsp;random</a>
+            <a href="#" class="btn" id="btn-customize">customize</a>
         </fieldset>
         
         <fieldset class="share-field">
@@ -40,18 +40,32 @@
             <a href="#" class="social-btn" id="facebook-btn" target="_blank"><img src="img/facebook.png" /></a>
             <a href="#" class="social-btn" id="twitter-btn" target="_blank"><img src="img/twitter.png" /></a>
         </fieldset>
+
+        <form id="form-customize" class="collapsed"></form>
+
     </div>
     
-    <!-- wrapper (iFrames) -->
+    <!-- WRAPPER (iFrames) -->
     <label id="curr-site"></label>
-    <div id="frames-wrapper">
-        
-    </div>
+    <div id="frames-wrapper"></div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/lib/jquery-1.7.2.min.js"><\/script>')</script>
-    <script src="js/jquery.framer.js">></script>
-    <script src="js/jquery.configurator.js">></script>
+    <script id="form-customize-tpl" type="text/x-jsrender">
+        <div id="form-customize-fields">
+        {{for frames}}
+            <fieldset><input type="text" class="input-width" value="{{>width}}"> x <input type="text" class="input-height" value="{{>height}}"> <input type="text" class="input-label" value="{{>label}}"><a href="#" class="btn btn-delete">&times;</a>
+            </fieldset>
+        {{/for}}
+        <fieldset><input type="text" class="input-width" value=""> x <input type="text" class="input-height" value=""> <input type="text" class="input-label" value=""><a href="#" class="btn btn-delete">&times;</a>
+            </fieldset>
+        </div>
+        <a href="#" id="customize-btn-finish" class="btn">Finish</a>
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.8.2.min.js"><\/script>')</script>
+    <script src="js/jsrender.js"></script>
+    <script src="js/jquery.framer.js"></script>
+    <script src="js/jquery.configurator.js"></script>
     <script>
         $(function() {
 
@@ -73,6 +87,27 @@
                 'http://css-tricks.com'
             ];
 
+            // get sizes from url params or use default
+            var frames = [];
+            var sizes = $.Configurator().getConfig().sizes;
+            if (sizes) {
+                $.each(sizes, function(i,val) {
+                    frame = val.split(':');
+                    size = frame[0].toLowerCase().split('x');
+                    frames.push({ width:size[0], height:size[1], label:frame[1] || '' });
+                });
+            } else {
+                frames = [
+                    { width:320, height:480, label:'Phone (portrait)' },
+                    { width:480, height:320, label:'Phone (landscape)' },
+                    { width:480, height:800, label:'Small Tablet (portrait)' },
+                    { width:800, height:480, label:'Small Tablet (landscape)' },
+                    { width:768, height:1024, label:'Large Tablet (portrait)' },
+                    { width:1024, height:768, label:'Large Tablet (landscape)' },
+                    { width:1280, height:800, label:'Desktop' }
+                ];
+            }
+
             // url of responsivator web page for share outs
             var responsivatorURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
@@ -80,15 +115,18 @@
             var site =  $.Configurator().getConfig().site || getRandomSite();
             responsivate(site);
 
+            // create customize form
+            $('#form-customize').html($('#form-customize-tpl').render({frames:frames}));
+
             // hide the header if that is option is set in the url
-            if ($.Configurator().getConfig().header == 'hide') {
+            if ($.Configurator().getConfig().header === 'hide') {
                 $('header, .controls, #curr-site').css('display','none');
             }
 
             // button event to responsivate! a random responsive page
             $('#view-random-btn').on('click',function(e) {
                 e.preventDefault();
-                $.Framer({ url:getRandomSite(), target:'#frames-wrapper' });
+                $.Framer({ url:getRandomSite(), target:'#frames-wrapper', frames:frames });
             });
 
             // button event to responsivate! the url in the input site field
@@ -116,6 +154,45 @@
                 }
             });
 
+            // customize modal
+            $()
+            $('#btn-customize').on('click', function (e) {
+                e.preventDefault();
+                $('#form-customize').removeClass('collapsed');
+            });
+            $('#customize-btn-finish').on('click', function(e) {
+                e.preventDefault();
+                var valid = true;
+                $('.input-width,.input-height').removeClass('error');
+                var sizeConfig = '';
+                $('#form-customize').find('fieldset').each(function(){
+
+                    var width = $(this).find('.input-width').val();
+                    var height = $(this).find('.input-height').val();
+                    var label = $(this).find('.input-label').val();
+                    if (width === '' && height !== '') {
+                        valid = false;
+                        $(this).find('.input-width').addClass('error');
+                    }
+                    if (height === '' && width !== '') {
+                        valid = false;
+                        $(this).find('.input-height').addClass('error');
+                    }
+                    if (valid && width !== '' && height !== '') {
+                        if (sizeConfig !== '') sizeConfig += ',';
+                        sizeConfig += width+'x'+height+':'+label;
+                    }
+                });
+                if (valid) {
+                    $('#form-customize').addClass('collapsed');
+                    window.location = './?sizes='+sizeConfig;
+                }
+            })
+            $('#form-customize').on('click','.btn-delete', function(e) {
+                e.preventDefault();
+                $(this).parent().remove();
+            })
+
             function getRandomSite() {
                 return sitesArray[Math.floor(Math.random()*sitesArray.length)];
             }
@@ -132,8 +209,14 @@
                 $('#share-field-input').val(shareURL);
                 
                 // update frames
-                $.Framer({ url:url, target:'#frames-wrapper' });
-                
+                $.Framer({ url:url, target:'#frames-wrapper', frames:frames });
+
+                // update width of page
+                var pageWidth = 0;
+                $('.frame').each(function() { pageWidth += $(this).outerWidth(true); } );
+                pageWidth = (pageWidth > 1200) ? pageWidth+60 : 1200;
+                $('header, .controls, .wrapper').css('width',pageWidth+20);
+
                 // update current site label
                 $('#curr-site').html('website: <a href="'+url+'" target="_blank">'+url.replace('http://','')+'</a>');
                 
