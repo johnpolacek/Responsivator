@@ -134,7 +134,7 @@
             // button event to responsivate! the url in the input site field
             $('#view-btn').on('click',function(e) {
                 e.preventDefault();
-                responsivate($('#input-site').val());
+                window.location = './?site='+$('#input-site').val()+getSizeParams();
             });
 
             // when you click the share field, auto-select it so it can be copied
@@ -153,7 +153,7 @@
             // responsivate! on enter keypress
             $('#input-site').keypress(function(e) {
                 if (e.keyCode == 13) {
-                    responsivate($('#input-site').val());
+                    window.location = './?site='+$('#input-site').val()+getSizeParams();
                 }
             });
 
