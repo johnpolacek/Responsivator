@@ -217,7 +217,7 @@
 
             function responsivate(url) {
                 // add http:// if it is missing
-                if (url.indexOf('http://')===-1) { url = 'http://'+url; }
+                if (url.indexOf('http://')===-1 || url.indexOf('https://')===-1) { url = 'http://'+url; }
 
                 // create share url (and check if header hide option is checked)
                 var shareURL = responsivatorURL+'?site='+url;
