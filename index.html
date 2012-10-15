@@ -29,7 +29,7 @@
             <label>Enter website url:</label>
             <input type="text" id="input-site">
             <a href="#" id="view-btn" class="btn">Responsivate!</a>
-            <a href="#" id="view-random-btn" class="btn">view&nbsp;random</a>
+            <a href="./" class="btn">view&nbsp;random</a>
             <a href="#" class="btn" id="btn-customize">customize</a>
         </fieldset>
         
@@ -124,12 +124,6 @@
             if ($.Configurator().getConfig().header === 'hide') {
                 $('header, .controls, #curr-site').css('display','none');
             }
-
-            // button event to responsivate! a random responsive page
-            $('#view-random-btn').on('click',function(e) {
-                e.preventDefault();
-                $.Framer({ url:getRandomSite(), target:'#frames-wrapper', frames:frames });
-            });
 
             // button event to responsivate! the url in the input site field
             $('#view-btn').on('click',function(e) {
