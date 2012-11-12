@@ -71,22 +71,22 @@
 
             // default random sites to show if no user selection
             var sitesArray = [
-                'http://mountaindew.com',
-                'http://www.anderssonwise.com',
-                'http://www.bostonglobe.com',
-                'http://us.illyissimo.com',
-                'http://www.starbucks.com',
-                'http://mediaqueri.es',
-                'http://www.alistapart.com/d/responsive-web-design/ex/ex-site-FINAL.html',
-                'http://corporate.target.com',
-                'http://clearairchallenge.com',
-                'http://foodsense.is',
-                'http://sweethatclub.org',
-                'http://morehazards.com',
-                'http://www.microsoft.com',
-                'http://css-tricks.com',
-                'http://time.com',
-                'http://www.enochs.co.uk/'
+                'mountaindew.com',
+                'www.anderssonwise.com',
+                'www.bostonglobe.com',
+                'us.illyissimo.com',
+                'www.starbucks.com',
+                'mediaqueri.es',
+                'www.alistapart.com/d/responsive-web-design/ex/ex-site-FINAL.html',
+                'corporate.target.com',
+                'clearairchallenge.com',
+                'foodsense.is',
+                'sweethatclub.org',
+                'morehazards.com',
+                'www.microsoft.com',
+                'css-tricks.com',
+                'time.com',
+                'www.enochs.co.uk/'
             ];
 
             // get sizes from url params or use default
@@ -130,7 +130,7 @@
             // button event to responsivate! the url in the input site field
             $('#view-btn').on('click',function(e) {
                 e.preventDefault();
-                window.location = './?site='+$('#input-site').val()+getSizeParams();
+                window.location = './?site='+$('#input-site').val().replace('http://','').replace('https://','')+getSizeParams();
             });
 
             // when you click the share field, auto-select it so it can be copied
@@ -149,7 +149,7 @@
             // responsivate! on enter keypress
             $('#input-site').keypress(function(e) {
                 if (e.keyCode == 13) {
-                    window.location = './?site='+$('#input-site').val()+getSizeParams();
+                    window.location = './?site='+$('#input-site').val().replace('http://','').replace('https://','')+getSizeParams();
                 }
             });
 
@@ -218,7 +218,7 @@
                 }
 
                 // create share url (and check if header hide option is checked)
-                var shareURL = responsivatorURL+'?site='+url;
+                var shareURL = responsivatorURL+'?site='+(url.replace('http://','').replace('https://',''));
 
                 if ($('#hide-header').is(':checked')) {
                     shareURL += '&header=hide';
