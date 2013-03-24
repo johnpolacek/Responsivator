@@ -120,6 +120,7 @@
 
             // responsivate site to show from url parameters or do random
             var site =  $.Configurator().getConfig().site || getRandomSite();
+            site = decodeURIComponent(site);
             responsivate(site);
 
             $('#input-site').val(site);
@@ -135,7 +136,7 @@
             // button event to responsivate! the url in the input site field
             $('#view-btn').on('click',function(e) {
                 e.preventDefault();
-                window.location = './?site='+$('#input-site').val().replace('http://','').replace('https://','')+getSizeParams();
+                window.location = './?site='+encodeURIComponent($('#input-site').val().replace('http://','').replace('https://',''))+getSizeParams();
             });
 
             // when you click the share field, auto-select it so it can be copied
@@ -145,16 +146,16 @@
             $('#hide-header').on('change',function() {
                 
                 if ($(this).is(':checked')) {
-                    $('#share-field-input').val(responsivatorURL+'?site='+site+'&header=hide'+getSizeParams());
+                    $('#share-field-input').val(responsivatorURL+'?site='+encodeURIComponent(site)+'&header=hide'+getSizeParams());
                 } else {
-                    $('#share-field-input').val(responsivatorURL+'?site='+site+getSizeParams());
+                    $('#share-field-input').val(responsivatorURL+'?site='+encodeURIComponent(site)+getSizeParams());
                 }
             });
             
             // responsivate! on enter keypress
             $('#input-site').keypress(function(e) {
                 if (e.keyCode == 13) {
-                    window.location = './?site='+$('#input-site').val().replace('http://','').replace('https://','')+getSizeParams();
+                    window.location = './?site='+encodeURIComponent($('#input-site').val().replace('http://','').replace('https://',''))+getSizeParams();
                 }
             });
 
@@ -223,7 +224,7 @@
                 }
 
                 // create share url (and check if header hide option is checked)
-                var shareURL = responsivatorURL+'?site='+(url.replace('http://','').replace('https://',''));
+                var shareURL = responsivatorURL+'?site='+encodeURIComponent((url.replace('http://','').replace('https://','')));
 
                 if ($('#hide-header').is(':checked')) {
                     shareURL += '&header=hide';
@@ -244,8 +245,8 @@
                 $('#curr-site').html('website: <a href="'+url+'" target="_blank">'+url.replace('http://','')+'</a>');
                 
                 // update facebook link
-                $('#facebook-btn').attr('href','http://www.facebook.com/sharer.php?u=http://dfcb.github.com/Responsivator?site='+url);
-                
+                $('#facebook-btn').attr('href','http://www.facebook.com/sharer.php?u=http://dfcb.github.com/Responsivator?site='+encodeURIComponent(url));
+
                 // update twitter link
                 $('#twitter-btn').attr('href','https://twitter.com/share?url=http%3A%2F%2Fdfcb.github.com%2FResponsivator?site='+encodeURIComponent(site)+'&text=See%20how%20websites%20look%20at%20different%20screensizes%20with%20Responsivator&hashtags=responsivewebdesign');
                 
