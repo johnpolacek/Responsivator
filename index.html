@@ -122,6 +122,8 @@
             var site =  $.Configurator().getConfig().site || getRandomSite();
             responsivate(site);
 
+            $('#input-site').val(site);
+
             // create customize form
             $('#form-customize').html($('#form-customize-tpl').render({frames:frames}));
 
