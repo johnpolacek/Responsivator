@@ -89,7 +89,9 @@
                 // 'time.com',
                 // 'www.enochs.co.uk',
                 // 'www.redcross.org.nz'
-                'gotchocolatemilk.com'
+                'gotchocolatemilk.com',
+                'opensource.draftfcb.net',
+                'dfcb.github.io/extra-strength-responsive-grids/'
             ];
 
             // get sizes from url params or use default
@@ -105,12 +107,12 @@
                 });
             } else {
                 frames = [
-                    { width:320, height:480, label:'Phone (portrait)' },
-                    { width:480, height:320, label:'Phone (landscape)' },
-                    { width:480, height:800, label:'Small Tablet (portrait)' },
-                    { width:800, height:480, label:'Small Tablet (landscape)' },
-                    { width:768, height:1024, label:'Large Tablet (portrait)' },
-                    { width:1024, height:768, label:'Large Tablet (landscape)' },
+                    { width:320, height:480, label:'Phone (portrait)', adjustForScrollbar:true },
+                    { width:480, height:320, label:'Phone (landscape)', adjustForScrollbar:true },
+                    { width:480, height:800, label:'Small Tablet (portrait)', adjustForScrollbar:true },
+                    { width:800, height:480, label:'Small Tablet (landscape)', adjustForScrollbar:true },
+                    { width:768, height:1024, label:'Large Tablet (portrait)', adjustForScrollbar:true },
+                    { width:1024, height:768, label:'Large Tablet (landscape)', adjustForScrollbar:true },
                     { width:1280, height:800, label:'Desktop' }
                 ];
             }

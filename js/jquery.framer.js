@@ -40,32 +40,33 @@
         var defaults = {};
         defaults.target = 'body';
         defaults.frames = [
-            { width:320, height:480, label:'Phone (portrait)' },
-            { width:480, height:320, label:'Phone (landscape)' },
-            { width:480, height:800, label:'Small Tablet (portrait)' },
-            { width:800, height:480, label:'Small Tablet (landscape)' },
-            { width:768, height:1024, label:'Large Tablet (portrait)' },
-            { width:1024, height:768, label:'Large Tablet (landscape)' },
+            { width:320, height:480, label:'Phone (portrait)', adjustForScrollbar:true },
+            { width:480, height:320, label:'Phone (landscape)', adjustForScrollbar:true },
+            { width:480, height:800, label:'Small Tablet (portrait)', adjustForScrollbar:true },
+            { width:800, height:480, label:'Small Tablet (landscape)', adjustForScrollbar:true },
+            { width:768, height:1024, label:'Large Tablet (portrait)', adjustForScrollbar:true },
+            { width:1024, height:768, label:'Large Tablet (landscape)', adjustForScrollbar:true },
             { width:1280, height:800, label:'Desktop' }
         ];
-        
+
         // by default, get full url of page for iframes
         // we don't use './' because we want to include url parameters
         // will be overwritten by url provided in the options.url
         defaults.url = window.location.protocol + "://" + window.location.host + "/" + window.location.pathname + window.location.search;
-        
+
         // Merge options with defaults
         var settings = $.extend({}, defaults, options);
 
         // generate new markup for the page
         var markup = '<div class="wrapper">';
-        
+
         // iterate through frames objects to create iframe markup for each
         var frames = settings.frames;
         for (var i=0; i < frames.length; i++) {
+            var scrollbarAdjust = typeof(frames[i].adjustForScrollbar) === 'undefined' ? 0 : (frames[i].adjustForScrollbar ? 16 : 0);
             markup += '<div class="frame">';
             markup +=   '<h2>'+frames[i].width+' &times; '+frames[i].height+' <small>'+frames[i].label+'</small></h2>';
-            markup +=   '<iframe src="'+settings.url+'" sandbox="allow-same-origin allow-forms allow-scripts" seamless width="'+frames[i].width+'" height="'+frames[i].height+'"></iframe>';
+            markup +=   '<iframe src="'+settings.url+'" sandbox="allow-same-origin allow-forms allow-scripts" seamless width="'+(frames[i].width+scrollbarAdjust)+'" height="'+frames[i].height+'"></iframe>';
             markup += '</div>';
         }
         markup += '</div>';
