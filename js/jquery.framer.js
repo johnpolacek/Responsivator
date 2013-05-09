@@ -66,14 +66,14 @@
             var scrollbarAdjust = typeof(frames[i].adjustForScrollbar) === 'undefined' ? 0 : (frames[i].adjustForScrollbar ? 16 : 0);
             markup += '<div class="frame">';
             markup +=   '<h2>'+frames[i].width+' &times; '+frames[i].height+' <small>'+frames[i].label+'</small></h2>';
-            markup +=   '<iframe src="'+settings.url+'" sandbox="allow-same-origin allow-forms allow-scripts" seamless width="'+(frames[i].width+scrollbarAdjust)+'" height="'+frames[i].height+'"></iframe>';
+            markup +=   '<iframe src="'+settings.url+'" sandbox="allow-same-origin allow-forms allow-scripts" seamless width="'+(parseInt(frames[i].width)+scrollbarAdjust)+'" height="'+frames[i].height+'"></iframe>';
             markup += '</div>';
         }
         markup += '</div>';
 
         // write iframes onto page
         $(settings.target).html(markup);
-        
+
     };
 
 })(jQuery);
