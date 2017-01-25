@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script>if (window.location.protocol == "https:") window.location.protocol = "http";</script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Responsivator</title>
@@ -74,7 +73,13 @@
 
             // default random sites to show if no user selection
             var sitesArray = [
-                'gesture.com'
+                'gesture.com',
+                'marvelapp.com',
+                'tachyons.io',
+                'webslides.tv',
+                'css-tricks.com',
+                'shoptalkshow.com',
+                'eightbitstudios.com'
             ];
 
             // get sizes from url params or use default
@@ -90,12 +95,10 @@
                 });
             } else {
                 frames = [
-                    { width:320, height:480, label:'Phone (portrait)', adjustForScrollbar:false },
-                    { width:480, height:320, label:'Phone (landscape)', adjustForScrollbar:false },
-                    { width:480, height:800, label:'Small Tablet (portrait)', adjustForScrollbar:false },
-                    { width:800, height:480, label:'Small Tablet (landscape)', adjustForScrollbar:false },
-                    { width:768, height:1024, label:'Large Tablet (portrait)', adjustForScrollbar:false },
-                    { width:1024, height:768, label:'Large Tablet (landscape)', adjustForScrollbar:false },
+                    { width:360, height:640, label:'Phone (portrait)', adjustForScrollbar:false },
+                    { width:640, height:360, label:'Phone (landscape)', adjustForScrollbar:false },
+                    { width:768, height:1024, label:'Tablet (portrait)', adjustForScrollbar:false },
+                    { width:1024, height:768, label:'Tablet (landscape)', adjustForScrollbar:false },
                     { width:1280, height:800, label:'Desktop' }
                 ];
             }
@@ -108,7 +111,7 @@
             site = decodeURIComponent(site);
             responsivate(site);
 
-            $('#input-site').val(site);
+            $('#input-site').val(site.replace('//',''));
 
             // create customize form
             $('#form-customize').html($('#form-customize-tpl').render({frames:frames}));
@@ -205,7 +208,7 @@
             function responsivate(url) {
                 // add http:// if it is missing
                 if ( url.indexOf('http:') === -1 && url.indexOf('https:')===-1) { 
-                    url = 'http://'+url; 
+                    url = '//'+url; 
                 }
 
                 // create share url (and check if header hide option is checked)
@@ -227,7 +230,7 @@
                 $('header, .controls, .wrapper').css('width',pageWidth+20);
 
                 // update current site label
-                $('#curr-site').html('website: <a href="'+url+'" target="_blank">'+url.replace('http://','')+'</a>');
+                $('#curr-site').html('website: <a href="'+url+'" target="_blank">'+url.replace('//','')+'</a>');
                 
                 // update facebook link
                 $('#facebook-btn').attr('href','http://www.facebook.com/sharer.php?u=http://dfcb.github.com/Responsivator?site='+encodeURIComponent(url));
